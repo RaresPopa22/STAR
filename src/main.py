@@ -1,14 +1,14 @@
 import os
 import streamlit as st
 
-from db_client import save, get_collection
+from db_client import save, create_collection
 from llm_client import ask_assistant
 from text_client import get_text_from_image
 from translator_client import TranslatorClient
 
 translator_client = TranslatorClient()
 
-collection = get_collection()
+collection = create_collection()
 
 st.set_page_config(page_title="Librarian", page_icon="🤖")
 st.title("Personal archive")

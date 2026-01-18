@@ -11,21 +11,13 @@ EMBEDDING_MODEL = 'paraphrase-multilingual-MiniLM-L12-v2'
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-client = chromadb.PersistentClient(path=CHROMA_DATA_PATH)
-ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL, device='mps')
+def create_collection(client=None, ef=None):
+    client = client or chromadb.PersistentClient(path=CHROMA_DATA_PATH)
+    ef = ef or embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL, device='mps')
+    return client.get_or_create_collection(name="documents", embedding_function=ef)
 
 
-collection = client.get_or_create_collection(
-    name="documents",
-    embedding_function=ef
-)
-
-
-def get_collection():
-    return collection
-
-
-def save(text):
+def save(collection, text):
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,
@@ -36,13 +28,14 @@ def save(text):
     ids = [str(uuid.uuid4()) for _ in chunks]
 
     collection.add(ids=ids, documents=chunks)
+    return chunks
 
 
-def query_db(query_text):
+def query_db(collection, query_text):
     return collection.query(query_texts=query_text, n_results=1)
 
 
-def peek():
+def peek(collection):
     count = collection.count()
     logger.info(f"Total chunks in the DB: {count}")
 
