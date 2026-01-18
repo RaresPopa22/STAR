@@ -26,34 +26,42 @@ def _get_text_from_pdf(path):
     text_lines = []
 
     for page in doc:
-        text_lines.append(page.get_text())
+        text = page.get_text()
+        if text.strip():
+            text_lines.append(page.get_text())
+        else:
+            pix = page.get_pixmap()
+            temp_img_path = f'/tmp/page_{page.number}.png'
+            pix.save(temp_img_path)
+            text_lines.append(_get_text_from_image(temp_img_path))
 
     return "\n".join(text_lines)
 
 
-def get_text_from_image(path, translator):
+def extract_text(path):
     extension = os.path.splitext(path)[1].lower()
 
     if extension == ".pdf":
-        text = _get_text_from_pdf(path)
+        return _get_text_from_pdf(path)
     elif extension in [".jpg", ".jpeg", ".png"]:
-        text = _get_text_from_image(path)
+        return _get_text_from_image(path)
     else:
         raise Exception('Unsupported file!')
 
-    doc = nlp(text)
 
-    translated = ""
+def translate_text(text, translator):
+    doc = nlp(text)
     sentences = [sent.text.strip() for sent in doc.sents if sent.text.strip()]
 
-    for s in sentences:
-        r = len(sentences) // TRANSLATOR_THRESHOLD + 1
+    translated_sentences = []
+    for sentence in sentences:
+        for i in range(0, len(sentence), TRANSLATOR_THRESHOLD):
+            chunk = sentence[i:i + TRANSLATOR_THRESHOLD]
+            translated_sentences.append(translator.ro_en.translate(chunk))
 
-        for i in range(r):
-            start = i * TRANSLATOR_THRESHOLD
-            end = start + TRANSLATOR_THRESHOLD
-            segment_ro = s[start:end]
-            segment_en = translator.translate(segment_ro)
-            translated += segment_en
+    return " ".join(translated_sentences)
 
-    return translated
+
+def get_text_from_image(path, translator):
+    text = extract_text(path)
+    return translate_text(text, translator)
