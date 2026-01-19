@@ -1,4 +1,6 @@
 import os
+import time
+
 import streamlit as st
 
 from db_client import save, create_collection
@@ -6,9 +8,11 @@ from llm_client import ask_assistant
 from text_client import get_text_from_image
 from translator_client import TranslatorClient
 
-translator_client = TranslatorClient()
+@st.cache_resource
+def get_resources():
+    return TranslatorClient(), create_collection()
 
-collection = create_collection()
+translator_client, collection = get_resources()
 
 st.set_page_config(page_title="Librarian", page_icon="🤖")
 st.title("Personal archive")
@@ -38,7 +42,8 @@ if prompt:= st.chat_input("What do you need to find?", accept_file=True, file_ty
 
             with st.chat_message("assistant"):
                 st.markdown("Processing file...")
-                save(get_text_from_image(file_temp_path, translator_client.ro_en))
+                text = get_text_from_image(file_temp_path, translator_client)
+                save(collection, text)
                 st.success("Successfully read the file")
                 st.session_state.messages.append({"role": "assistant", "content": f"Processed {file.name}"})
 
