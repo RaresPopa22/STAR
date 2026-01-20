@@ -41,7 +41,7 @@ if prompt:= st.chat_input("What do you need to find?", accept_file=True, file_ty
         st.session_state.messages.append({"role": "user", "content": prompt.text})
 
     if prompt.files:
-        temp_dir = "../temp"
+        temp_dir = Path(__file__).parent.parent / 'temp'
         os.makedirs(temp_dir, exist_ok=True)
         for file in prompt.files:
             file_temp_path = os.path.join(temp_dir, file.name)
