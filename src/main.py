@@ -6,7 +6,7 @@ import yaml
 
 from db_client import save, create_collection
 from llm_client import ask_assistant
-from src.translator_client import TranslatorClient
+from translator_client import TranslatorClient
 from text_client import get_text_from_image
 
 def read_config(path):
@@ -17,7 +17,7 @@ def read_config(path):
 
 @st.cache_resource
 def get_resources():
-    config_path = Path(__file__).parent / 'config' / 'base_config.yaml'
+    config_path = Path(__file__).parent.parent / 'config' / 'base_config.yaml'
     cfg = read_config(config_path)
     return TranslatorClient(), create_collection(cfg), cfg
 
@@ -52,7 +52,7 @@ if prompt:= st.chat_input("What do you need to find?", accept_file=True, file_ty
             with st.chat_message("assistant"):
                 st.markdown("Processing file...")
                 text = get_text_from_image(config, file_temp_path, translator)
-                save(collection, file_temp_path, text)
+                save(config, collection, file_temp_path, text)
                 st.success("Successfully read the file")
                 st.session_state.messages.append({"role": "assistant", "content": f"Processed {file.name}"})
 
