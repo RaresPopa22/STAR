@@ -3,8 +3,13 @@ chroma_data:
 
 sentence_transformer:
   embedding_model: 'paraphrase-multilingual-MiniLM-L12-v2'
+  device: 'mps'
 
 translator:
-  threshold: 4999
+  threshold: 5000
 
 relevance_threshold: 1
+
+text_splitter:
+  chunk_size: 1000
+  chunk_overlap: 200

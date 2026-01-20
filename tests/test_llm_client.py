@@ -1,8 +1,9 @@
 from unittest.mock import Mock, patch
 from src.llm_client import ask_assistant
 
+
 def test_ask_assistant():
-    mock_config = { "relevance_threshold": 1 }
+    mock_config = {"relevance_threshold": 1}
     mock_translator = Mock()
     translated_query = "query"
     mock_translator.translate.return_value = translated_query
@@ -18,7 +19,7 @@ def test_ask_assistant():
         original_query = "interogare"
         res = ask_assistant(mock_config, mock_collection, mock_translator, original_query)
         mock_translator.translate.assert_called_once_with(original_query)
-        mock_collection.query.assert_called_once_with(query_texts=translated_query, n_results = 5)
+        mock_collection.query.assert_called_once_with(query_texts=translated_query, n_results=5)
         call_args = mock_ollama.call_args
         print(f"call_args={call_args}")
         prompt = call_args.kwargs['messages'][0]['content']
@@ -26,4 +27,3 @@ def test_ask_assistant():
         assert context in prompt
         assert original_query in prompt
         assert res == expected_answer
-

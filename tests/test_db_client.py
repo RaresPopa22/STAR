@@ -4,9 +4,10 @@ from src.db_client import save, query_db, create_collection
 
 
 def test_save():
+    mock_config = {'text_splitter': {'chunk_size': 1000, 'chunk_overlap': 200}}
     mock_collection = MagicMock()
     text = "Text to save"
-    chunks = save(mock_collection,"mock.jpg", text)
+    chunks = save(mock_config, mock_collection,"mock.jpg", text)
 
     mock_collection.add.assert_called_once()
     call_kwargs = mock_collection.add.call_args.kwargs
@@ -16,12 +17,13 @@ def test_save():
 
 
 def test_save_long_text():
+    mock_config = {'text_splitter': {'chunk_size': 1000, 'chunk_overlap': 200}}
     mock_collection = MagicMock()
     sentence = "A very long sentence "
     n = 1000 // len(sentence) + 1
     long_sentence = sentence * n + "."
 
-    chunks = save(mock_collection, "mock.jpg", long_sentence)
+    chunks = save(mock_config, mock_collection, "mock.jpg", long_sentence)
     call_kwargs = mock_collection.add.call_args.kwargs
     assert len(chunks) > 1
     assert len(call_kwargs['documents']) > 1

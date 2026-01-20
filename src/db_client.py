@@ -13,20 +13,22 @@ logger.setLevel(logging.INFO)
 def create_collection(config, client=None, ef=None):
     client = client or chromadb.PersistentClient(path=config['chroma_data']['path'])
     ef = ef or embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name=config['sentence_transformer']['embedding_model'], device='mps')
+        model_name=config['sentence_transformer']['embedding_model'], device=config['sentence_transformer']['device'])
     return client.get_or_create_collection(name="documents", embedding_function=ef)
 
 
-def save(collection, filename, text):
+def save(config, collection, filename, text):
+    text_splitter_config = config['text_splitter']
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
+        chunk_size=text_splitter_config['chunk_size'],
+        chunk_overlap=text_splitter_config['chunk_overlap'],
         separators=["\n\n", "\n", " ", ""],
     )
 
     chunks = splitter.split_text(text)
     ids = [str(uuid.uuid4()) for _ in chunks]
-    metadata = [{"filename": filename, "upload_date": datetime.now().isoformat(), "chunk_index": i} for i in range(len(chunks))]
+    metadata = [{"filename": filename, "upload_date": datetime.now().isoformat(), "chunk_index": i} for i in
+                range(len(chunks))]
 
     collection.add(ids=ids, metadatas=metadata, documents=chunks)
     return chunks

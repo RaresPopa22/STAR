@@ -1,12 +1,13 @@
 import os
+from pathlib import Path
 
 import streamlit as st
 import yaml
 
 from db_client import save, create_collection
 from llm_client import ask_assistant
+from src.translator_client import TranslatorClient
 from text_client import get_text_from_image
-from translator_client import TranslatorClient
 
 def read_config(path):
     with open(path, 'r') as f:
@@ -16,10 +17,11 @@ def read_config(path):
 
 @st.cache_resource
 def get_resources():
-    cfg = read_config('./config/base_config.yaml')
+    config_path = Path(__file__).parent / 'config' / 'base_config.yaml'
+    cfg = read_config(config_path)
     return TranslatorClient(), create_collection(cfg), cfg
 
-translator_client, collection, config = get_resources()
+translator, collection, config = get_resources()
 
 st.set_page_config(page_title="Librarian", page_icon="🤖")
 st.title("Personal archive")
@@ -49,7 +51,7 @@ if prompt:= st.chat_input("What do you need to find?", accept_file=True, file_ty
 
             with st.chat_message("assistant"):
                 st.markdown("Processing file...")
-                text = get_text_from_image(config, file_temp_path, translator_client)
+                text = get_text_from_image(config, file_temp_path, translator)
                 save(collection, file_temp_path, text)
                 st.success("Successfully read the file")
                 st.session_state.messages.append({"role": "assistant", "content": f"Processed {file.name}"})
@@ -57,7 +59,7 @@ if prompt:= st.chat_input("What do you need to find?", accept_file=True, file_ty
     if prompt.text:
         with st.chat_message("assistant"):
             with st.spinner("Looking through the documents..."):
-                response = ask_assistant(config, collection, translator_client.ro_en, prompt.text)
+                response = ask_assistant(config, collection, translator, prompt.text)
                 st.markdown(response)
 
         st.session_state.messages.append({"role": "assistant", "content": response})

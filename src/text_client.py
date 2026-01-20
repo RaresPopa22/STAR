@@ -1,24 +1,33 @@
 import os.path
 import spacy
+import threading
 
 import fitz
 from paddleocr import PaddleOCR
 
 _ocr = None
 _nlp = None
+_ocr_lock = threading.Lock()
+_nlp_lock = threading.Lock()
+
 
 def get_ocr():
     global _ocr
 
     if _ocr is None:
-        _ocr = PaddleOCR(lang="ro")
+        with _ocr_lock:
+            if _ocr is None:
+                _ocr = PaddleOCR(lang="ro")
     return _ocr
+
 
 def get_nlp():
     global _nlp
 
     if _nlp is None:
-        _nlp = spacy.load("ro_core_news_sm")
+        with _nlp_lock:
+            if _nlp is None:
+                _nlp = spacy.load("ro_core_news_sm")
     return _nlp
 
 
@@ -77,19 +86,19 @@ def translate_text(config, text, translator):
     for sentence in sentences:
         if len(sentence) > threshold:
             if batch:
-                translated_chunks.append(translator.ro_en.translate(" ".join(batch)))
+                translated_chunks.append(translator.translate(" ".join(batch)))
                 batch = []
                 batch_length = 0
 
             for i in range(0, len(sentence), threshold):
                 chunk = sentence[i:i + threshold]
-                translated_chunks.append(translator.ro_en.translate(chunk))
+                translated_chunks.append(translator.translate(chunk))
 
         else:
             new_length = batch_length + len(sentence) + (1 if batch else 0)
 
             if new_length > threshold:
-                translated_chunks.append(translator.ro_en.translate(" ".join(batch)))
+                translated_chunks.append(translator.translate(" ".join(batch)))
                 batch = [sentence]
                 batch_length = len(sentence)
             else:
@@ -97,7 +106,7 @@ def translate_text(config, text, translator):
                 batch_length = new_length
 
     if batch:
-        translated_chunks.append(translator.ro_en.translate(" ".join(batch)))
+        translated_chunks.append(translator.translate(" ".join(batch)))
 
     return " ".join(translated_chunks)
 

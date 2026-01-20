@@ -91,7 +91,9 @@ durationpy==0.10
 etelemetry==0.3.1
     # via nipype
 exceptiongroup==1.3.1
-    # via anyio
+    # via
+    #   anyio
+    #   pytest
 filelock==3.20.3
     # via
     #   huggingface-hub
@@ -160,6 +162,8 @@ importlib-resources==6.5.2
     # via
     #   chromadb
     #   nibabel
+iniconfig==2.3.0
+    # via pytest
 isodate==0.7.2
     # via rdflib
 jinja2==3.1.6
@@ -287,6 +291,7 @@ packaging==25.0
     #   nipype
     #   onnxruntime
     #   paddlex
+    #   pytest
     #   spacy
     #   streamlit
     #   thinc
@@ -307,6 +312,8 @@ pillow==12.1.0
     # via
     #   paddlex
     #   streamlit
+pluggy==1.6.0
+    # via pytest
 posthog==5.4.0
     # via chromadb
 preshed==3.0.12
@@ -359,7 +366,9 @@ pydot==4.0.1
     #   nipype
     #   prov
 pygments==2.19.2
-    # via rich
+    # via
+    #   pytest
+    #   rich
 pyparsing==3.3.1
     # via
     #   httplib2
@@ -371,6 +380,8 @@ pypika==0.50.0
     # via chromadb
 pyproject-hooks==1.2.0
     # via build
+pytest==9.0.2
+    # via -r requirements.in
 python-bidi==0.6.7
     # via paddlex
 python-dateutil==2.9.0.post0
@@ -501,7 +512,9 @@ tokenizers==0.22.2
 toml==0.10.2
     # via streamlit
 tomli==2.4.0
-    # via build
+    # via
+    #   build
+    #   pytest
 torch==2.9.1
     # via sentence-transformers
 tornado==6.5.4
