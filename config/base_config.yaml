@@ -1,0 +1,10 @@
+chroma_data:
+  path: '../chroma_data/'
+
+sentence_transformer:
+  embedding_model: 'paraphrase-multilingual-MiniLM-L12-v2'
+
+translator:
+  threshold: 4999
+
+relevance_threshold: 1

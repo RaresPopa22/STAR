@@ -4,8 +4,6 @@ import spacy
 import fitz
 from paddleocr import PaddleOCR
 
-TRANSLATOR_THRESHOLD = 4999
-
 _ocr = None
 _nlp = None
 
@@ -67,7 +65,8 @@ def extract_text(path):
         raise Exception('Unsupported file!')
 
 
-def translate_text(text, translator):
+def translate_text(config, text, translator):
+    threshold = config['translator']['threshold']
     doc = get_nlp()(text)
     sentences = [sent.text.strip() for sent in doc.sents if sent.text.strip()]
 
@@ -76,20 +75,20 @@ def translate_text(text, translator):
     batch_length = 0
 
     for sentence in sentences:
-        if len(sentence) > TRANSLATOR_THRESHOLD:
+        if len(sentence) > threshold:
             if batch:
                 translated_chunks.append(translator.ro_en.translate(" ".join(batch)))
                 batch = []
                 batch_length = 0
 
-            for i in range(0, len(sentence), TRANSLATOR_THRESHOLD):
-                chunk = sentence[i:i + TRANSLATOR_THRESHOLD]
+            for i in range(0, len(sentence), threshold):
+                chunk = sentence[i:i + threshold]
                 translated_chunks.append(translator.ro_en.translate(chunk))
 
         else:
             new_length = batch_length + len(sentence) + (1 if batch else 0)
 
-            if new_length > TRANSLATOR_THRESHOLD:
+            if new_length > threshold:
                 translated_chunks.append(translator.ro_en.translate(" ".join(batch)))
                 batch = [sentence]
                 batch_length = len(sentence)
@@ -103,6 +102,6 @@ def translate_text(text, translator):
     return " ".join(translated_chunks)
 
 
-def get_text_from_image(path, translator):
+def get_text_from_image(config, path, translator):
     text = extract_text(path)
-    return translate_text(text, translator)
+    return translate_text(config, text, translator)

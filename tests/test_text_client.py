@@ -40,25 +40,31 @@ def test_pdf_text_extraction():
 
 
 def test_translate():
+    mock_config = {
+        "translator": {"threshold": 4999}
+    }
     text = "Pacientul sufera de hipotiroidism."
     translator = TranslatorClient()
-    translated_text = translate_text(text, translator)
+    translated_text = translate_text(mock_config, text, translator)
 
     assert "hypothyroidism" in translated_text
 
     text = "         "
-    translated_text = translate_text(text, translator)
+    translated_text = translate_text(mock_config, text, translator)
     assert "" == translated_text
 
 
 def test_translate_text_over_threshold():
+    mock_config = {
+        "translator": {"threshold": 4999}
+    }
     n = 5000
     long_sentence = "a" * n
 
     mock_translator = Mock()
     mock_translator.ro_en.translate.side_effect = lambda x: x
 
-    translated_text = translate_text(long_sentence, mock_translator)
+    translated_text = translate_text(mock_config, long_sentence, mock_translator)
 
     assert mock_translator.ro_en.translate.call_count == 2
 

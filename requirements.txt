@@ -98,12 +98,16 @@ filelock==3.20.3
     #   modelscope
     #   nipype
     #   paddlex
+    #   torch
+    #   transformers
 fitz==0.0.1.dev2
     # via -r requirements.in
 flatbuffers==25.12.19
     # via onnxruntime
 fsspec==2026.1.0
-    # via huggingface-hub
+    # via
+    #   huggingface-hub
+    #   torch
 future==1.0.0
     # via bce-python-sdk
 gitdb==4.0.12
@@ -131,13 +135,14 @@ httptools==0.7.1
 httpx==0.28.1
     # via
     #   chromadb
-    #   huggingface-hub
     #   langsmith
     #   ollama
-huggingface-hub==1.3.2
+huggingface-hub==0.36.0
     # via
     #   paddlex
+    #   sentence-transformers
     #   tokenizers
+    #   transformers
 humanfriendly==10.0
     # via coloredlogs
 idna==3.11
@@ -162,6 +167,9 @@ jinja2==3.1.6
     #   altair
     #   pydeck
     #   spacy
+    #   torch
+joblib==1.5.3
+    # via scikit-learn
 jsonpatch==1.33
     # via langchain-core
 jsonpointer==3.0.0
@@ -207,6 +215,7 @@ networkx==3.4.2
     # via
     #   nipype
     #   prov
+    #   torch
 nibabel==5.3.3
     # via
     #   fitz
@@ -225,11 +234,13 @@ numpy==2.2.6
     #   paddlex
     #   pandas
     #   pydeck
+    #   scikit-learn
     #   scipy
     #   shapely
     #   spacy
     #   streamlit
     #   thinc
+    #   transformers
 oauthlib==3.3.1
     # via requests-oauthlib
 ollama==0.6.1
@@ -279,6 +290,7 @@ packaging==25.0
     #   spacy
     #   streamlit
     #   thinc
+    #   transformers
     #   weasel
 paddleocr==3.3.2
     # via -r requirements.in
@@ -382,6 +394,7 @@ pyyaml==6.0.2
     #   langchain-core
     #   paddleocr
     #   paddlex
+    #   transformers
     #   uvicorn
 rdflib==7.5.0
     # via nipype
@@ -389,11 +402,14 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
+regex==2026.1.15
+    # via transformers
 requests==2.32.5
     # via
     #   aistudio-sdk
     #   deep-translator
     #   etelemetry
+    #   huggingface-hub
     #   kubernetes
     #   langsmith
     #   modelscope
@@ -405,6 +421,7 @@ requests==2.32.5
     #   requests-toolbelt
     #   spacy
     #   streamlit
+    #   transformers
     #   weasel
 requests-oauthlib==2.0.0
     # via kubernetes
@@ -420,16 +437,22 @@ rpds-py==0.30.0
     #   referencing
 ruamel-yaml==0.19.1
     # via paddlex
+safetensors==0.7.0
+    # via transformers
+scikit-learn==1.7.2
+    # via sentence-transformers
 scipy==1.15.3
     # via
     #   fitz
     #   nipype
+    #   scikit-learn
+    #   sentence-transformers
+sentence-transformers==5.2.0
+    # via -r requirements.in
 shapely==2.1.2
     # via paddlex
 shellingham==1.5.4
-    # via
-    #   huggingface-hub
-    #   typer
+    # via typer
 simplejson==3.20.2
     # via nipype
 six==1.17.0
@@ -459,7 +482,9 @@ srsly==2.5.2
 streamlit==1.53.0
     # via -r requirements.in
 sympy==1.14.0
-    # via onnxruntime
+    # via
+    #   onnxruntime
+    #   torch
 tenacity==9.1.2
     # via
     #   chromadb
@@ -467,12 +492,18 @@ tenacity==9.1.2
     #   streamlit
 thinc==8.3.10
     # via spacy
+threadpoolctl==3.6.0
+    # via scikit-learn
 tokenizers==0.22.2
-    # via chromadb
+    # via
+    #   chromadb
+    #   transformers
 toml==0.10.2
     # via streamlit
 tomli==2.4.0
     # via build
+torch==2.9.1
+    # via sentence-transformers
 tornado==6.5.4
     # via streamlit
 tqdm==4.67.1
@@ -481,14 +512,17 @@ tqdm==4.67.1
     #   chromadb
     #   huggingface-hub
     #   modelscope
+    #   sentence-transformers
     #   spacy
+    #   transformers
 traits==7.1.0
     # via nipype
+transformers==4.57.6
+    # via sentence-transformers
 typer==0.21.1
     # via chromadb
 typer-slim==0.21.1
     # via
-    #   huggingface-hub
     #   spacy
     #   weasel
 typing-extensions==4.15.0
@@ -513,7 +547,9 @@ typing-extensions==4.15.0
     #   pydantic-core
     #   pypika
     #   referencing
+    #   sentence-transformers
     #   streamlit
+    #   torch
     #   typer
     #   typer-slim
     #   typing-inspection

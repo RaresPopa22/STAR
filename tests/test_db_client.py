@@ -6,7 +6,7 @@ from src.db_client import save, query_db, create_collection
 def test_save():
     mock_collection = MagicMock()
     text = "Text to save"
-    chunks = save(mock_collection, text)
+    chunks = save(mock_collection,"mock.jpg", text)
 
     mock_collection.add.assert_called_once()
     call_kwargs = mock_collection.add.call_args.kwargs
@@ -21,7 +21,7 @@ def test_save_long_text():
     n = 1000 // len(sentence) + 1
     long_sentence = sentence * n + "."
 
-    chunks = save(mock_collection, long_sentence)
+    chunks = save(mock_collection, "mock.jpg", long_sentence)
     call_kwargs = mock_collection.add.call_args.kwargs
     assert len(chunks) > 1
     assert len(call_kwargs['documents']) > 1
@@ -40,8 +40,9 @@ def test_query():
 
 
 def test_create_collection():
+    mock_config = {}
     mock_client = MagicMock()
     mock_ef = MagicMock()
 
-    create_collection(client=mock_client, ef=mock_ef)
+    create_collection(mock_config, client=mock_client, ef=mock_ef)
     mock_client.get_or_create_collection.assert_called_once_with(name="documents", embedding_function=mock_ef)
