@@ -8,7 +8,7 @@ Llama 3.1.
 ```mermaid
 flowchart TD
     subgraph Ingestion
-        A[Input(img/pdf)] --> B[PaddleOCR/PyMuPDF] --> C[DeepTranslator] --> D[ChromaDB]
+        A[Input] --> B[PaddleOCR/PyMuPDF] --> C[DeepTranslator] --> D[ChromaDB]
     end
     subgraph Query
         E[Question] --> F[ChromaDB] --> G[Llama 3.1] --> H[Streamlit UI]
