@@ -1,7 +1,11 @@
 from unittest.mock import Mock, patch
+
+import pytest
+
 from src.llm_client import ask_assistant
 
 
+@pytest.mark.unit
 def test_ask_assistant():
     mock_config = {"relevance_threshold": 1}
     mock_translator = Mock()

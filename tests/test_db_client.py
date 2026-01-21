@@ -1,13 +1,16 @@
 from unittest.mock import MagicMock
 
+import pytest
+
 from src.db_client import save, query_db, create_collection
 
 
+@pytest.mark.unit
 def test_save():
     mock_config = {'text_splitter': {'chunk_size': 1000, 'chunk_overlap': 200}}
     mock_collection = MagicMock()
     text = "Text to save"
-    chunks = save(mock_config, mock_collection,"mock.jpg", text)
+    chunks = save(mock_config, mock_collection, "mock.jpg", text)
 
     mock_collection.add.assert_called_once()
     call_kwargs = mock_collection.add.call_args.kwargs
@@ -16,6 +19,7 @@ def test_save():
     assert [text] == chunks
 
 
+@pytest.mark.unit
 def test_save_long_text():
     mock_config = {'text_splitter': {'chunk_size': 1000, 'chunk_overlap': 200}}
     mock_collection = MagicMock()
@@ -29,6 +33,7 @@ def test_save_long_text():
     assert len(call_kwargs['documents']) > 1
 
 
+@pytest.mark.unit
 def test_query():
     mock_collection = MagicMock()
     expected_result = {'documents': [['result']], 'ids': [[1]]}
@@ -41,6 +46,7 @@ def test_query():
     mock_collection.query.assert_called_with(query_texts=query_text, n_results=1)
 
 
+@pytest.mark.unit
 def test_create_collection():
     mock_config = {}
     mock_client = MagicMock()

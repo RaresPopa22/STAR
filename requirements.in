@@ -1,6 +1,6 @@
 chromadb==1.4.1
 deep_translator==1.11.4
-fitz==0.0.1.dev2
+PyMuPDF==1.26.7
 langchain_text_splitters==1.1.0
 ollama==0.6.1
 paddleocr==3.3.2
